@@ -98,7 +98,7 @@
             btnGroupContainer.append('<button type="button" class="'
                                     +btnClass
                                     +' btn-default btn-sm" title="'
-                                    +button.title
+				                            +this.__localize(button.title)
                                     +'" tabindex="'
                                     +tabIndex
                                     +'" data-provider="'
@@ -110,7 +110,7 @@
                                     +'><span class="'
                                     +buttonIcon
                                     +'"></span> '
-                                    +btnText
+				                            +this.__localize(btnText)
                                     +'</button>')
 
             // Register handler and callback
@@ -167,6 +167,19 @@
       }
 
       e.preventDefault()
+    }
+
+  , __localize: function(string) {
+      var messages = $.fn.markdown.messages,
+	        language = this.$options.language
+      if (
+	      typeof messages !== 'undefined' &&
+	      typeof messages[language] !== 'undefined' &&
+	      typeof messages[language][string] !== 'undefined'
+      ) {
+	      return messages[language][string];
+      }
+      return string;
     }
 
   , __showModalPopup: function(data, callback) {
@@ -321,7 +334,9 @@
                               +ns
                               +'" data-handler="'
                               +saveHandler
-                              +'"><i class="icon icon-white icon-ok"></i> Save</button>')
+                              +'"><i class="icon icon-white icon-ok"></i> '
+                              +this.__localize('Save')
+                              +'Save</button>')
 
           editor.append(editorFooter)
         }
@@ -740,6 +755,8 @@
     })
   }
 
+  $.fn.markdown.messages = {}
+
   $.fn.markdown.defaults = {
     /* Editor Properties */
     autofocus: false,
@@ -749,6 +766,7 @@
     width: 'inherit',
     height: 'inherit',
     iconlibrary: 'glyph',
+    language: 'en',
 
     /* Buttons Properties */
     buttons: [
@@ -764,7 +782,7 @@
 
             if (selected.length == 0) {
               // Give extra word
-              chunk = 'strong text'
+	            chunk = e.__localize('strong text')
             } else {
               chunk = selected.text
             }
@@ -793,7 +811,7 @@
 
             if (selected.length == 0) {
               // Give extra word
-              chunk = 'emphasized text'
+	            chunk = e.__localize('emphasized text')
             } else {
               chunk = selected.text
             }
@@ -822,7 +840,7 @@
 
             if (selected.length == 0) {
               // Give extra word
-              chunk = 'heading text'
+	            chunk = e.__localize('heading text')
             } else {
               chunk = selected.text + '\n';
             }
@@ -858,13 +876,13 @@
                 cursor,
                 selected = e.getSelection(),
                 text = {
-                  title: 'Insert Hyperlink',
-                  label: 'URL/Link',
+                  title: e.__localize('Insert Hyperlink'),
+                  label: e.__localize('URL/Link'),
                   placeholder: 'http://'
                 }
 
             var processLink = function(link) {
-              if (link != null && link != '' && link != 'http://') {
+              if (link != null && link != '' && link != text.placeholder) {
                 // transform selection and set the cursor into chunked text
                 e.replaceSelection('['+chunk+']('+link+')')
                 cursor = selected.start+1
@@ -876,7 +894,7 @@
 
             if (selected.length == 0) {
               // Give extra word
-              chunk = 'enter link description here'
+	            chunk = e.__localize('enter link description here')
             } else {
               chunk = selected.text
             }
@@ -897,15 +915,15 @@
                 cursor,
                 selected = e.getSelection(),
                 text = {
-                  title: 'Insert Image Hyperlink',
-                  label: 'URL/Link',
+                  title: e.__localize('Insert Image Hyperlink'),
+                  label: e.__localize('URL/Link'),
                   placeholder: 'http://'
                 }
 
             var processLink = function(link) {
               if (link != null) {
                 // transform selection and set the cursor into chunked text
-                e.replaceSelection('!['+chunk+']('+link+' "enter image title here")')
+                e.replaceSelection('!['+chunk+']('+link+' "'+e.__localize('enter image title here')+'")')
                 cursor = selected.start+2
 
                 // Set the next tab
@@ -918,7 +936,7 @@
 
             if (selected.length == 0) {
               // Give extra word
-              chunk = 'enter image description here'
+	            chunk = e.__localize('enter image description here')
             } else {
               chunk = selected.text
             }
@@ -943,7 +961,7 @@
             // transform selection and set the cursor into chunked text
             if (selected.length == 0) {
               // Give extra word
-              chunk = 'list text here'
+	            chunk = e.__localize('list text here')
 
               e.replaceSelection('- '+chunk)
 
