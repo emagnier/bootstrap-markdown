@@ -601,17 +601,29 @@
     }
 
   , keydown: function (e) {
+      var options = this.$options
+
       this.suppressKeyPressRepeat = ~$.inArray(e.keyCode, [40,38,9,13,27])
       this.keyup(e)
+
+      // Trigger the onKeydown hook
+      options.onKeydown(this)
     }
 
   , keypress: function (e) {
+      var options = this.$options
+
       if (this.suppressKeyPressRepeat) return
       this.keyup(e)
+
+      // Trigger the onKeypress hook
+      options.onKeypress(this)
     }
 
   , keyup: function (e) {
-      var blocked = false
+      var options = this.$options,
+	  blocked = false
+
       switch(e.keyCode) {
         case 40: // down arrow
         case 38: // up arrow
@@ -661,6 +673,9 @@
       if (blocked) {
         e.stopPropagation()
         e.preventDefault()
+      } else {
+	// Trigger the onKeyup hook
+	options.onKeyup(this)
       }
   }
 
@@ -1036,6 +1051,9 @@
     onSave: function (e) {},
     onBlur: function (e) {},
     onFocus: function (e) {},
+    onKeydown: function (e) {},
+    onKeypress: function (e) {},
+    onKeyup: function (e) {}
   }
 
   $.fn.markdown.Constructor = Markdown
